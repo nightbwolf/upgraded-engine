@@ -3,28 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clínica OdontoVida - Início</title>
+    <title>Clínica OdontoVida - Cadastro</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js" defer></script>
 </head>
 <body>
     <header>
         <nav class="nav">
-            <div class="logo">Clínica M&D</div>
+            <div class="logo">Clínica OdontoVida</div>
             <ul class="menu">
-                <li><a href="index.html">Início</a></li>
-                <li><a href="/html/sobre.html">Sobre Nós</a></li>
-                <li><a href="/html/cadastro.html">Cadastro</a></li>
-                <li><a href="/html/parceiro_login.html">Área do Parceiro</a></li>
+                <li><a href="../index.html">Início</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="parceiro_login.html">Área do Parceiro</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero">
-        <div class="hero-conteudo">
-            <h1>Sorriso saudável, vida mais feliz</h1>
-            <p>Atendimento especializado com profissionais experientes em diversas áreas da odontologia.</p>
-            <a href="/html/cadastro.html" class="btn-primario">Agende sua consulta</a>
-        </div>
+    <section class="cadastro">
+        <h1>Cadastro de Paciente</h1>
+        <form class="form-cadastro">
+            <label>Nome Completo</label>
+            <input type="text" placeholder="Digite seu nome" required>
+
+            <label>E-mail</label>
+            <input type="email" placeholder="Digite seu e-mail" required>
+
+            <label>Telefone</label>
+            <input type="tel" placeholder="(00) 00000-0000" required>
+
+            <label>Mensagem / Observações</label>
+            <textarea placeholder="Descreva seu caso ou dúvidas..."></textarea>
+
+            <button type="submit" class="btn-primario">Enviar</button>
+        </form>
     </section>
 
     <footer>
@@ -44,9 +56,9 @@
             <div class="footer-section">
                 <h3>Links</h3>
                 <a href="index.html">Início</a><br>
-                <a href="/html/sobre.html">Sobre Nós</a><br>
-                <a href="/html/cadastro.html">Cadastro</a><br>
-                <a href="/html/parceiro_login.html">Área do Parceiro</a>
+                <a href="sobre.html">Sobre Nós</a><br>
+                <a href="cadastro.html">Cadastro</a><br>
+                <a href="parceiro-login.html">Área do Parceiro</a>
             </div>
 
             <div class="footer-section">

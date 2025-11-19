@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Parceiro - OdontoVida</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js" defer ></script>
+</head>
+<body>
+    <div class="container-parceiro">
+
+        <aside class="menu-lateral">
+            <h3>Menu</h3>
+            <ul>
+                <li><a href="#">Financeiro</a></li>
+                <li><a href="#">Cadastro de Clientes</a></li>
+                <li><a href="#">Relatórios</a></li>
+                <li><a href="parceiro_login.html">Sair</a></li>
+            </ul>
+        </aside>
+
+        <main class="conteudo">
+            <h2>Bem-vindo(a) à Área do Parceiro</h2>
+            <p>Aqui você pode acessar informações financeiras, gerenciar cadastros e visualizar relatórios.</p>
+            <h2>Clientes Cadastrados</h2>
+            <table id="tabelaClientes">
+                <tbody>
+                    <tr>
+                        <td data-label="Nome">João Silva</td>
+                        <td data-label="E-mail">joao@email.com</td>
+                        <td data-label="Telefone">(98) 99999-9999</td>
+                        <td data-label="Observações">Check-up mensal</td>
+                        <td data-label="Ações">
+                        <button onclick="editarCliente(0)">Editar</button>
+                        <button onclick="deletarCliente(0)">Deletar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+    </div>
+</body>
+</html>

@@ -3,28 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clínica OdontoVida - Início</title>
+    <title>Clínica OdontoVida - Área do Parceiro</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/script.js" defer></script>
 </head>
 <body>
     <header>
         <nav class="nav">
-            <div class="logo">Clínica M&D</div>
+            <div class="logo">Clínica OdontoVida</div>
             <ul class="menu">
                 <li><a href="index.html">Início</a></li>
-                <li><a href="/html/sobre.html">Sobre Nós</a></li>
-                <li><a href="/html/cadastro.html">Cadastro</a></li>
-                <li><a href="/html/parceiro_login.html">Área do Parceiro</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="parceiro-login.html">Área do Parceiro</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero">
-        <div class="hero-conteudo">
-            <h1>Sorriso saudável, vida mais feliz</h1>
-            <p>Atendimento especializado com profissionais experientes em diversas áreas da odontologia.</p>
-            <a href="/html/cadastro.html" class="btn-primario">Agende sua consulta</a>
-        </div>
+    <section class="login-section">
+        <form class="login-card">
+            <h2>Login do Parceiro</h2>
+
+            <label for="user">Usuário</label>
+            <input type="text" id="user" placeholder="Digite o usuário">
+
+            <label for="password">Senha</label>
+            <input type="password" id="password" placeholder="Digite a senha">
+
+            <button type="button" id="btnLogin" class="btn-primario">Entrar</button>
+        </form>
     </section>
 
     <footer>
@@ -44,9 +51,9 @@
             <div class="footer-section">
                 <h3>Links</h3>
                 <a href="index.html">Início</a><br>
-                <a href="/html/sobre.html">Sobre Nós</a><br>
-                <a href="/html/cadastro.html">Cadastro</a><br>
-                <a href="/html/parceiro_login.html">Área do Parceiro</a>
+                <a href="sobre.html">Sobre Nós</a><br>
+                <a href="cadastro.html">Cadastro</a><br>
+                <a href="parceiro-login.html">Área do Parceiro</a>
             </div>
 
             <div class="footer-section">
@@ -61,5 +68,7 @@
 
         <p class="footer-copy">© 2025 OdontoVida — Todos os direitos reservados.</p>
     </footer>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
