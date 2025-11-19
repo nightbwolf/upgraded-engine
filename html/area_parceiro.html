@@ -5,39 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área do Parceiro - OdontoVida</title>
     <link rel="stylesheet" href="../css/style.css">
-    <script src="../js/script.js" defer ></script>
+    <script src="../js/script.js" defer></script>
 </head>
 <body>
     <div class="container-parceiro">
 
+        <!-- Menu lateral -->
         <aside class="menu-lateral">
             <h3>Menu</h3>
             <ul>
-                <li><a href="#">Financeiro</a></li>
-                <li><a href="#">Cadastro de Clientes</a></li>
-                <li><a href="#">Relatórios</a></li>
+                <li><a href="area_parceiro.html">Início</a></li>
+                <li><a href="cadastro.html">Cadastro de Clientes</a></li>
                 <li><a href="parceiro_login.html">Sair</a></li>
             </ul>
         </aside>
 
-        <main class="conteudo">
-            <h2>Bem-vindo(a) à Área do Parceiro</h2>
-            <p>Aqui você pode acessar informações financeiras, gerenciar cadastros e visualizar relatórios.</p>
-            <h2>Clientes Cadastrados</h2>
-            <table id="tabelaClientes">
-                <tbody>
-                    <tr>
-                        <td data-label="Nome">João Silva</td>
-                        <td data-label="E-mail">joao@email.com</td>
-                        <td data-label="Telefone">(98) 99999-9999</td>
-                        <td data-label="Observações">Check-up mensal</td>
-                        <td data-label="Ações">
-                        <button onclick="editarCliente(0)">Editar</button>
-                        <button onclick="deletarCliente(0)">Deletar</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Conteúdo principal -->
+        <main class="conteudo-principal">
+
+            <!-- Seção de clientes -->
+            <section class="secao-clientes">
+                <h2 class="titulo-secao">Clientes Cadastrados</h2>
+                <table id="tabelaClientes" class="tabela-clientes">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>Observações</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- preenchido via script.js -->
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <!-- Seção de agenda -->
+            <section class="secao-agenda">
+                <h2 class="titulo-secao">Agenda do Mês</h2>
+                <div id="calendario" class="calendario-grid">
+                    <!-- preenchido via JS -->
+                </div>
+            </section>
+
         </main>
 
     </div>

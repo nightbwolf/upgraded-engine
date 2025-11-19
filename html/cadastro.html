@@ -22,18 +22,27 @@
 
     <section class="cadastro">
         <h1>Cadastro de Paciente</h1>
-        <form class="form-cadastro">
+
+        <form class="form-cadastro" id="formSelecionarHorario">
             <label>Nome Completo</label>
-            <input type="text" placeholder="Digite seu nome" required>
+            <input type="text" name="nome" placeholder="Digite seu nome" required>
 
             <label>E-mail</label>
-            <input type="email" placeholder="Digite seu e-mail" required>
+            <input type="email" name="email" placeholder="Digite seu e-mail" required>
 
             <label>Telefone</label>
-            <input type="tel" placeholder="(00) 00000-0000" required>
+            <input type="tel" name="telefone" placeholder="(00) 00000-0000" required>
 
-            <label>Mensagem / Observações</label>
-            <textarea placeholder="Descreva seu caso ou dúvidas..."></textarea>
+            <label>Observações</label>
+            <textarea name="obs" placeholder="Observações"></textarea>
+
+            <label for="dia">Escolha o dia:</label>
+            <input type="date" id="dia" class="campo-data">
+
+            <h3>Horários Disponíveis</h3>
+            <div id="horarios" class="horarios-container">
+                <!-- preenchido pelo script.js -->
+            </div>
 
             <button type="submit" class="btn-primario">Enviar</button>
         </form>
@@ -55,22 +64,19 @@
 
             <div class="footer-section">
                 <h3>Links</h3>
-                <a href="index.html">Início</a><br>
+                <a href="../index.html">Início</a><br>
                 <a href="sobre.html">Sobre Nós</a><br>
                 <a href="cadastro.html">Cadastro</a><br>
-                <a href="parceiro-login.html">Área do Parceiro</a>
+                <a href="parceiro_login.html">Área do Parceiro</a>
             </div>
 
             <div class="footer-section">
                 <h3>Redes Sociais</h3>
-                <p>
-                    <a href="#">Instagram</a><br>
-                    <a href="#">Facebook</a><br>
-                    <a href="#">WhatsApp</a>
-                </p>
+                <a href="#">Instagram</a><br>
+                <a href="#">Facebook</a><br>
+                <a href="#">WhatsApp</a>
             </div>
         </div>
-
         <p class="footer-copy">© 2025 OdontoVida — Todos os direitos reservados.</p>
     </footer>
 </body>
