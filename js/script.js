@@ -261,7 +261,7 @@ function carregarClientesDoBD() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'sucesso') {
-            const tabela = document.getElementById("tabela_clientes");
+            const tabela = document.getElementById("tabelaClientes");
             tabela.innerHTML = '';
             
             data.clientes.forEach(cliente => {
