@@ -18,7 +18,7 @@ if ($conn->connect_error) {
 
 $conn->set_charset("utf8mb4");
 
-// Receber dados via POST
+// Receber dados
 $acao = $_POST['acao'] ?? '';
 
 if ($acao === 'salvar_cliente') {
