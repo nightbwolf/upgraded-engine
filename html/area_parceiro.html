@@ -6,6 +6,7 @@
     <title>Área do Parceiro - OdontoVida</title>
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/script.js" defer></script>
+    <script> window.addEventListener('load', carregarClientesDoBD);</script> <!-- chamar banco de dados quando recarregar a página-->
 </head>
 <body>
     <div class="container-parceiro">
@@ -57,3 +58,9 @@
     </div>
 </body>
 </html>
+
+
+<!-- chamar banco de dados quando recarregar a página-->
+<script>
+    window.addEventListener('load', carregarClientesDoBD);
+</script>

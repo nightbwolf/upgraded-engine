@@ -228,3 +228,72 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarProcedimentos();
     configurarFinalizacao();
 });
+
+/* ============================================================
+    9. SINCRONIZAR LOCAL STORAGE COM BANCO DE DADOS
+   ============================================================ */
+
+function sincronizarComBD() {
+    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+    
+    clientes.forEach(cliente => {
+        fetch('php/salvar_dados.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `acao=salvar_cliente&nome=${encodeURIComponent(cliente.nome)}&email=${encodeURIComponent(cliente.email)}&telefone=${encodeURIComponent(cliente.telefone)}&observacoes=${encodeURIComponent(cliente.observacoes)}&procedimento=${encodeURIComponent(localStorage.getItem("procedimentoEscolhido") || '')}&horario=${encodeURIComponent(localStorage.getItem("horarioEscolhido") || '')}`
+        })
+        .then(response => response.json())
+        .then(data => console.log(data.mensagem))
+        .catch(error => console.error('Erro:', error));
+    });
+}
+
+/* ============================================================
+    10. CARREGAR DADOS DO BANCO DE DADOS
+   ============================================================ */
+
+function carregarClientesDoBD() {
+    fetch('php/salvar_dados.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'acao=listar_clientes'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'sucesso') {
+            const tabela = document.getElementById("tabela_clientes");
+            tabela.innerHTML = '';
+            
+            data.clientes.forEach(cliente => {
+                tabela.innerHTML += `
+                    <tr>
+                        <td>${cliente.nome}</td>
+                        <td>${cliente.email}</td>
+                        <td>${cliente.telefone}</td>
+                        <td>${cliente.observacoes}</td>
+                        <td>
+                            <button onclick="deletarClienteBD(${cliente.id})">Deletar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+
+// NOVA FUNÇÃO: Deletar do BD
+function deletarClienteBD(id) {
+    if (confirm("Tem certeza?")) {
+        fetch('php/salvar_dados.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `acao=deletar_cliente&id=${id}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            carregarClientesDoBD();
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+}
