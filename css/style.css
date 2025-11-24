@@ -108,7 +108,7 @@ body {
     text-align: center;
     color: var(--white);
     background: linear-gradient(135deg, rgba(46, 139, 87, 0.9), rgba(31, 107, 69, 0.9)), 
-                url('../images/hero-bg.jpg') no-repeat center/cover;
+                url('../images/hero-bg.jpeg') no-repeat center/cover;
     padding: 4rem 2rem;
     position: relative;
     overflow: hidden;
@@ -131,7 +131,7 @@ body {
 }
 
 .hero-conteudo h1 {
-    font-size: 3.5rem;
+    font-size: 3.0rem;
     font-weight: 800;
     margin-bottom: 1.5rem;
     line-height: 1.2;
@@ -639,7 +639,7 @@ textarea:focus {
     font-weight: 800;
     text-align: center;
     margin-bottom: 3rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, var(--primary-color));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1024,7 +1024,6 @@ textarea:focus {
 
 /* ==============================================
    ESTILOS ESPECÍFICOS PARA CADASTRO
-   (Mantendo todas as classes e IDs originais)
 =================================================*/
 
 /* Seção Cadastro */
@@ -1039,7 +1038,7 @@ textarea:focus {
     font-weight: 800;
     text-align: center;
     margin-bottom: 2rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, var(--primary-color));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1494,7 +1493,6 @@ textarea:focus {
 
 /* ==============================================
    ESTILOS MODERNOS PARA PROCEDIMENTOS
-   (Estilo clean e profissional)
 =================================================*/
 
 /* Container Principal */
@@ -1974,4 +1972,244 @@ textarea:focus {
 
 .login-card.erro {
     animation: shake 0.5s ease-in-out;
+}
+
+
+/* ==============================================
+   ÁREA DO PARCEIRO - DESIGN CLEAN
+=================================================*/
+
+.container-parceiro {
+    display: flex;
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+/* Menu Lateral Simples */
+.menu-lateral {
+    width: 260px;
+    background: #f8f9fa;
+    padding: 2rem 1.5rem;
+    border-right: 1px solid #e9ecef;
+}
+
+.menu-lateral h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2b2d42;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-lateral li {
+    margin-bottom: 0.5rem;
+}
+
+.menu-lateral a {
+    display: block;
+    padding: 0.8rem 1rem;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.menu-lateral a:hover {
+    background: #2E8B57;
+    color: white;
+}
+
+/* Conteúdo Principal */
+.conteudo-principal {
+    flex: 1;
+    padding: 2rem;
+    background: #ffffff;
+}
+
+/* Títulos */
+.titulo-secao {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2b2d42;
+    margin-bottom: 1.5rem;
+}
+
+/* Seções */
+.secao-clientes {
+    margin-bottom: 2rem;
+}
+
+.secao-agenda {
+    margin-top: 2rem;
+}
+
+/* Tabela Clean */
+.tabela-clientes {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tabela-clientes thead {
+    background: #2b2d42;
+}
+
+.tabela-clientes th {
+    padding: 1rem;
+    text-align: left;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.tabela-clientes td {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    color: #495057;
+}
+
+.tabela-clientes tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* Botões da Tabela */
+.tabela-clientes button {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+}
+
+.tabela-clientes button:first-child {
+    background: #ffc107;
+    color: #212529;
+}
+
+.tabela-clientes button:last-child {
+    background: #dc3545;
+    color: white;
+}
+
+/* Calendário Simples */
+.calendario-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 1rem;
+}
+
+.calendario-dia {
+    padding: 1rem 0.5rem;
+    text-align: center;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendario-dia:hover {
+    border-color: #2E8B57;
+}
+
+.calendario-dia.livre {
+    background: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.calendario-dia.ocupado {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Separador */
+hr {
+    border: none;
+    height: 1px;
+    background: #e9ecef;
+    margin: 2rem 0;
+}
+
+/* Estados Vazios */
+.tabela-clientes tbody tr.vazio td {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 3rem;
+}
+
+.calendario-grid.vazio {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 3rem;
+    border: 1px dashed #dee2e6;
+    border-radius: 8px;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .container-parceiro {
+        flex-direction: column;
+    }
+    
+    .menu-lateral {
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    .menu-lateral ul {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .conteudo-principal {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .calendario-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .tabela-clientes {
+        font-size: 0.9rem;
+    }
+    
+    .tabela-clientes th,
+    .tabela-clientes td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-lateral ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .calendario-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .tabela-clientes {
+        display: block;
+        overflow-x: auto;
+    }
 }
