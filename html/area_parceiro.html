@@ -6,11 +6,9 @@
     <title>Área do Parceiro - OdontoVida</title>
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/script.js" defer></script>
-    <script> window.addEventListener('load', carregarClientesDoBD);</script> <!-- chamar banco de dados quando recarregar a página-->
 </head>
 <body>
     <div class="container-parceiro">    
-
         <!-- Menu lateral -->
         <aside class="menu-lateral">
             <h3>Menu</h3>
@@ -23,7 +21,6 @@
 
         <!-- Conteúdo principal -->
         <main class="conteudo-principal">
-
             <!-- Seção de clientes -->
             <section class="secao-clientes">
                 <h2 class="titulo-secao">Clientes Cadastrados</h2>
@@ -52,15 +49,14 @@
                     <!-- preenchido via JS -->
                 </div>
             </section>
-
         </main>
-
     </div>
+
+    <script>
+        // Carregar dados quando a página estiver pronta
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarClientesDoBD();
+        });
+    </script>
 </body>
 </html>
-
-
-<!-- chamar banco de dados quando recarregar a página-->
-<script>
-    window.addEventListener('load', carregarClientesDoBD);
-</script>
