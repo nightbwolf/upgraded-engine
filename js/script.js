@@ -1,14 +1,15 @@
 /* ============================================================
    SISTEMA DA CLÍNICA • SCRIPT.JS - CORRIGIDO
    ============================================================ */
-
 /* ============================================================
-    1. CLIENTES — CRUD COM LOCALSTORAGE
+    1. CLIENTES — CRUD COM LOCALSTORAGE (ATUALIZADO)
    ============================================================ */
 
 function carregarClientes() {
     const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
     const tabela = document.querySelector("#tabelaClientes tbody");
+    if (!tabela) return;
+    
     tabela.innerHTML = "";
 
     clientes.forEach((cliente, index) => {
@@ -17,6 +18,8 @@ function carregarClientes() {
             <td>${cliente.nome || ''}</td>
             <td>${cliente.email || ''}</td>
             <td>${cliente.telefone || ''}</td>
+            <td>${cliente.data || ''}</td>                    <!-- CORRIGIDO -->
+            <td>${cliente.horario || ''}</td>                 <!-- CORRIGIDO -->
             <td>${cliente.observacoes || ''}</td>
             <td>
                 <button class="btn-editar" onclick="editarCliente(${index})">Editar</button>
@@ -27,43 +30,8 @@ function carregarClientes() {
     });
 }
 
-function editarCliente(index) {
-    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-    const c = clientes[index];
-
-    const nome = prompt("Editar Nome:", c.nome);
-    if (nome === null) return;
-
-    const email = prompt("Editar Email:", c.email);
-    if (email === null) return;
-
-    const telefone = prompt("Editar Telefone:", c.telefone);
-    if (telefone === null) return;
-
-    const obs = prompt("Editar Observações:", c.observacoes);
-
-    clientes[index] = { 
-        nome: nome || c.nome, 
-        email: email || c.email, 
-        telefone: telefone || c.telefone, 
-        observacoes: obs || c.observacoes 
-    };
-
-    localStorage.setItem("clientes", JSON.stringify(clientes));
-    carregarClientes();
-}
-
-function deletarCliente(index) {
-    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-    if (confirm("Excluir cliente?")) {
-        clientes.splice(index, 1);
-        localStorage.setItem("clientes", JSON.stringify(clientes));
-        carregarClientes();
-    }
-}
-
 /* ============================================================
-    2. CADASTRO DO CLIENTE — CORRIGIDO
+    2. CADASTRO DO CLIENTE — CORRIGIDO E COMPLETO
    ============================================================ */
 
 function configurarCadastro() {
@@ -77,6 +45,7 @@ function configurarCadastro() {
         const email = this.querySelector("input[name='email']").value;
         const telefone = this.querySelector("input[name='telefone']").value;
         const observacoes = this.querySelector("textarea[name='obs']").value;
+        const data = this.querySelector("#dia").value; // CAPTURAR A DATA
         const horario = localStorage.getItem("horarioEscolhido");
 
         if (!horario) {
@@ -84,20 +53,28 @@ function configurarCadastro() {
             return;
         }
 
+        if (!data) {
+            alert("Por favor, selecione uma data!");
+            return;
+        }
+
         // Salvar no localStorage
         const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-        clientes.push({ 
+        const novoCliente = { 
             nome, 
             email, 
             telefone, 
             observacoes,
+            data,           // ADICIONADO
             horario,
             procedimento: localStorage.getItem("procedimentoEscolhido") || ''
-        });
+        };
+        
+        clientes.push(novoCliente);
         localStorage.setItem("clientes", JSON.stringify(clientes));
 
         // Tentar sincronizar com BD
-        sincronizarComBD();
+        sincronizarComBD(novoCliente); // PASSAR O CLIENTE COMO PARÂMETRO
 
         alert("Cadastro realizado com sucesso!");
         this.reset();
