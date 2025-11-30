@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// Em produção, mudar * para domínio (ex: https://clinica.com)
+header('Access-Control-Allow-Origin: *'); 
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -10,15 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Config Banco de dados - VERIFIQUE SUAS CONFIGURAÇÕES!
+// Config Banco de dados
 $servername = "localhost";
-$port = "3307"; // Se estiver usando porta diferente
-$username = "root"; // Seu usuário MySQL
-$password = ""; // Sua senha MySQL
+$port = "3307"; 
+$username = "root"; 
+$password = ""; 
 $dbname = "clinica";
 
 try {
-    // Conexão corrigida
+    // Conexão
     $conn = new mysqli($servername, $username, $password, $dbname, $port);
     
     if ($conn->connect_error) {
@@ -27,45 +28,61 @@ try {
     
     $conn->set_charset("utf8mb4");
 
-    // Verifica se é POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Método não permitido');
     }
 
-    // Lê os dados JSON do corpo da requisição
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
     
-    // Se não conseguir ler como JSON, tenta como form-data
     if (!$data) {
         $data = $_POST;
     }
 
     $acao = $data['acao'] ?? '';
 
+    /* ============================================================
+       AÇÃO: SALVAR CLIENTE (COM CHECAGEM DE HORÁRIO)
+       ============================================================ */
     if ($acao === 'salvar_cliente') {
+        // Extrai os dados do payload JSON.
+        $nome = $data['nome'] ?? '';
+        $email = $data['email'] ?? '';
+        $telefone = $data['telefone'] ?? '';
+        $observacoes = $data['observacoes'] ?? '';
+        $procedimento = $data['procedimento'] ?? '';
+        $horario = $data['horario'] ?? '';
+        $data_agendamento = $data['data'] ?? date('Y-m-d'); // Pega a data da agenda
+
         // Validações
-        if (empty($data['nome']) || empty($data['telefone'])) {
-            throw new Exception('Nome e telefone são obrigatórios');
+        if (empty($nome) || empty($telefone) || empty($data_agendamento) || empty($horario)) {
+            throw new Exception('Nome, telefone, data e horário são obrigatórios');
         }
 
-        $nome = $conn->real_escape_string($data['nome'] ?? '');
-        $email = $conn->real_escape_string($data['email'] ?? '');
-        $telefone = $conn->real_escape_string($data['telefone'] ?? '');
-        $observacoes = $conn->real_escape_string($data['observacoes'] ?? '');
-        $procedimento = $conn->real_escape_string($data['procedimento'] ?? '');
-        $horario = $conn->real_escape_string($data['horario'] ?? '');
+        // ⚠️ VERIFICAÇÃO DE AGENDAMENTO ⚠️
+        $check_sql = "SELECT COUNT(*) FROM clientes WHERE data_agendamento = ? AND horario = ?";
+        $check_stmt = $conn->prepare($check_sql);
+        $check_stmt->bind_param("ss", $data_agendamento, $horario);
+        $check_stmt->execute();
+        $check_stmt->bind_result($count);
+        $check_stmt->fetch();
+        $check_stmt->close();
 
-        $sql = "INSERT INTO clientes (nome, email, telefone, observacoes, procedimento, horario, data_cadastro) 
-                VALUES (?, ?, ?, ?, ?, ?, NOW())";
+        if ($count > 0) {
+            // Lança exceção se o horário estiver ocupado
+            http_response_code(409); // Conflito
+            throw new Exception('❌ Este horário já está reservado. Por favor, escolha outro.');
+        }
+        // ------------------------------------
+
+        // Insere no banco (se o horário estiver livre)
+        $sql = "INSERT INTO clientes (nome, email, telefone, observacoes, procedimento, horario, data_agendamento, data_cadastro) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         
-        // Usando prepared statements para segurança
         $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            throw new Exception('Erro ao preparar query: ' . $conn->error);
-        }
         
-        $stmt->bind_param("ssssss", $nome, $email, $telefone, $observacoes, $procedimento, $horario);
+        // sssssss = 7 strings
+        $stmt->bind_param("sssssss", $nome, $email, $telefone, $observacoes, $procedimento, $horario, $data_agendamento);
         
         if ($stmt->execute()) {
             echo json_encode([
@@ -76,13 +93,16 @@ try {
         } else {
             throw new Exception('Erro ao executar query: ' . $stmt->error);
         }
-        
         $stmt->close();
 
     }
+    /* ============================================================
+       AÇÕES RESTANTES (LISTAR, DELETAR, EDITAR)
+       ============================================================ */
     elseif ($acao === 'listar_clientes') {
-        $sql = "SELECT id, nome, email, telefone, observacoes, procedimento, horario, data_cadastro 
-                FROM clientes ORDER BY data_cadastro DESC";
+        // Seleciona a coluna data_agendamento para exibir na tabela
+        $sql = "SELECT id, nome, email, telefone, observacoes, procedimento, horario, data_agendamento, data_cadastro 
+                FROM clientes ORDER BY data_agendamento DESC, horario ASC";
         $result = $conn->query($sql);
         
         if (!$result) {
@@ -99,51 +119,42 @@ try {
             'clientes' => $clientes,
             'total' => count($clientes)
         ]);
-
     }
     elseif ($acao === 'deletar_cliente') {
+        // deletar
         $id = intval($data['id'] ?? 0);
-        
-        if ($id <= 0) {
-            throw new Exception('ID inválido');
-        }
-        
+        if ($id <= 0) { throw new Exception('ID inválido'); }
         $sql = "DELETE FROM clientes WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
-        
         if ($stmt->execute()) {
             echo json_encode(['status' => 'sucesso', 'mensagem' => 'Cliente deletado!']);
         } else {
             throw new Exception('Erro ao deletar: ' . $stmt->error);
         }
-        
         $stmt->close();
-
     }
     elseif ($acao === 'editar_cliente') {
+        // Lógica de edição completa (permite alterar data e horário)
         $id = intval($data['id'] ?? 0);
-        $nome = $conn->real_escape_string($data['nome'] ?? '');
-        $email = $conn->real_escape_string($data['email'] ?? '');
-        $telefone = $conn->real_escape_string($data['telefone'] ?? '');
-        $observacoes = $conn->real_escape_string($data['observacoes'] ?? '');
+        $nome = $data['nome'] ?? '';
+        $email = $data['email'] ?? '';
+        $telefone = $data['telefone'] ?? '';
+        $observacoes = $data['observacoes'] ?? '';
+        $procedimento = $data['procedimento'] ?? '';
+        $horario = $data['horario'] ?? '';
+        $data_agendamento = $data['data'] ?? ''; 
 
-        $sql = "UPDATE clientes SET 
-                    nome = ?, 
-                    email = ?,
-                    telefone = ?,
-                    observacoes = ?
-                WHERE id = ?";
-        
+        $sql = "UPDATE clientes SET nome = ?, email = ?, telefone = ?, observacoes = ?, procedimento = ?, horario = ?, data_agendamento = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssi", $nome, $email, $telefone, $observacoes, $id);
+        
+        $stmt->bind_param("sssssssi", $nome, $email, $telefone, $observacoes, $procedimento, $horario, $data_agendamento, $id);
         
         if ($stmt->execute()) {
             echo json_encode(['status' => 'sucesso', 'mensagem' => 'Cliente atualizado!']);
         } else {
             throw new Exception('Erro ao atualizar: ' . $stmt->error);
         }
-        
         $stmt->close();
     }
     else {
@@ -151,6 +162,7 @@ try {
     }
 
 } catch (Exception $e) {
+    // Garante que o erro do banco ou de lógica é retornado
     echo json_encode([
         'status' => 'erro', 
         'mensagem' => 'Erro: ' . $e->getMessage()

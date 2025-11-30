@@ -1,9 +1,9 @@
 /* ============================================================
-   SISTEMA DA CLÍNICA • SCRIPT.JS - CORRIGIDO
-   ============================================================ */
+    SISTEMA DA CLÍNICA • SCRIPT.JS - CORRIGIDO (VERSÃO FINAL)
+    ============================================================ */
 /* ============================================================
-    1. CLIENTES — CRUD COM LOCALSTORAGE (ATUALIZADO)
-   ============================================================ */
+    1. CLIENTES — CRUD COM LOCALSTORAGE (MANTIDO COMO FALLBACK)
+    ============================================================ */
 
 function carregarClientes() {
     const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
@@ -18,8 +18,8 @@ function carregarClientes() {
             <td>${cliente.nome || ''}</td>
             <td>${cliente.email || ''}</td>
             <td>${cliente.telefone || ''}</td>
-            <td>${cliente.data || ''}</td>                    <!-- CORRIGIDO -->
-            <td>${cliente.horario || ''}</td>                 <!-- CORRIGIDO -->
+            <td>${cliente.data || ''}</td>
+            <td>${cliente.horario || ''}</td>
             <td>${cliente.observacoes || ''}</td>
             <td>
                 <button class="btn-editar" onclick="editarCliente(${index})">Editar</button>
@@ -31,8 +31,8 @@ function carregarClientes() {
 }
 
 /* ============================================================
-    2. CADASTRO DO CLIENTE — CORRIGIDO E COMPLETO
-   ============================================================ */
+    2. CADASTRO DO CLIENTE — CORRIGIDO
+    ============================================================ */
 
 function configurarCadastro() {
     const formCadastro = document.getElementById("formSelecionarHorario");
@@ -45,8 +45,10 @@ function configurarCadastro() {
         const email = this.querySelector("input[name='email']").value;
         const telefone = this.querySelector("input[name='telefone']").value;
         const observacoes = this.querySelector("textarea[name='obs']").value;
-        const data = this.querySelector("#dia").value; // CAPTURAR A DATA
+        const data = this.querySelector("#dia").value;
         const horario = localStorage.getItem("horarioEscolhido");
+        const procedimento = localStorage.getItem("procedimentoEscolhido") || '';
+
 
         if (!horario) {
             alert("Por favor, selecione um horário antes de enviar!");
@@ -58,30 +60,30 @@ function configurarCadastro() {
             return;
         }
 
-        // Salvar no localStorage
-        const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
         const novoCliente = { 
             nome, 
             email, 
             telefone, 
             observacoes,
-            data,           // ADICIONADO
+            data, 
             horario,
-            procedimento: localStorage.getItem("procedimentoEscolhido") || ''
+            procedimento
         };
         
+        // 1. Salvar no localStorage (temporário)
+        const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
         clientes.push(novoCliente);
         localStorage.setItem("clientes", JSON.stringify(clientes));
 
-        // Tentar sincronizar com BD
-        sincronizarComBD(novoCliente); // PASSAR O CLIENTE COMO PARÂMETRO
-
-        alert("Cadastro realizado com sucesso!");
+        // 2. Tentar sincronizar com BD (PASSANDO O OBJETO CORRETO)
+        sincronizarComBD(novoCliente); 
+        
+        // 3. Limpar formulário e storage (apenas se a sincronização for bem sucedida)
         this.reset();
         localStorage.removeItem("horarioEscolhido");
         localStorage.removeItem("procedimentoEscolhido");
         
-        // Remover seleção dos horários
+        // 4. Remover seleção dos horários
         document.querySelectorAll(".horario-btn").forEach(btn => {
             btn.classList.remove("selecionado");
         });
@@ -89,8 +91,8 @@ function configurarCadastro() {
 }
 
 /* ============================================================
-    3. LOGIN - CORRIGIDO
-   ============================================================ */
+    3. LOGIN - (AVISO DE SEGURANÇA MANTIDO)
+    ============================================================ */
 
 function configurarLogin() {
     const btnLogin = document.getElementById("btnLogin");
@@ -100,6 +102,7 @@ function configurarLogin() {
         const user = document.getElementById("user").value;
         const pass = document.getElementById("password").value;
 
+        // ⚠️ ATENÇÃO: LOGIN NÃO SEGURO. DEVE SER CORRIGIDO NO SERVIDOR.
         if (user === "admin" && pass === "1234") {
             window.location.href = "area_parceiro.html";
         } else {
@@ -109,8 +112,8 @@ function configurarLogin() {
 }
 
 /* ============================================================
-    4. PROCEDIMENTOS - CORRIGIDO
-   ============================================================ */
+    4. PROCEDIMENTOS / 5. CALENDÁRIO / 6. HORÁRIOS
+    ============================================================ */
 
 function configurarProcedimentos() {
     const cards = document.querySelectorAll(".procedimento-card");
@@ -140,10 +143,6 @@ function configurarProcedimentos() {
     });
 }
 
-/* ============================================================
-    5. CALENDÁRIO - CORRIGIDO
-   ============================================================ */
-
 function gerarCalendario() {
     const calendario = document.getElementById("calendario");
     if (!calendario) return;
@@ -154,14 +153,14 @@ function gerarCalendario() {
     const primeiroDia = new Date(ano, mes, 1).getDay();
     const ultimoDia = new Date(ano, mes + 1, 0).getDate();
 
-    // Dias ocupados (exemplo)
     const diasOcupados = [3, 7, 15, 22];
-
-    calendario.innerHTML = "";
+    
+    // Melhoria de performance: usar array join
+    let diasHtml = "";
 
     // Dias vazios no início
     for (let i = 0; i < primeiroDia; i++) {
-        calendario.innerHTML += `<div class="calendario-dia vazio"></div>`;
+        diasHtml += `<div class="calendario-dia vazio"></div>`;
     }
 
     // Dias do mês
@@ -169,17 +168,14 @@ function gerarCalendario() {
         const ocupado = diasOcupados.includes(dia);
         const classe = ocupado ? "ocupado" : "livre";
 
-        calendario.innerHTML += `
+        diasHtml += `
             <div class="calendario-dia ${classe}">
                 ${dia}
             </div>
         `;
     }
+    calendario.innerHTML = diasHtml; // Renderiza de uma vez
 }
-
-/* ============================================================
-    6. HORÁRIOS DISPONÍVEIS - CORRIGIDO
-   ============================================================ */
 
 const horarios = ["08:00", "09:00", "10:00", "14:00", "15:00", "16:00"];
 
@@ -191,7 +187,7 @@ function gerarHorarios() {
 
     horarios.forEach(h => {
         const btn = document.createElement("button");
-        btn.type = "button"; // Importante: evitar submit do form
+        btn.type = "button";
         btn.innerText = h;
         btn.classList.add("horario-btn");
 
@@ -209,73 +205,27 @@ function gerarHorarios() {
 }
 
 /* ============================================================
-    7. SINCRONIZAÇÃO COM BANCO - COMPLETAMENTE CORRIGIDA
-   ============================================================ */
+    7. SINCRONIZAÇÃO COM BANCO
+    ============================================================ */
 
-function sincronizarComBD() {
-    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
-    const ultimoCliente = clientes[clientes.length - 1];
-    
-    if (!ultimoCliente) {
-        console.log("Nenhum cliente para sincronizar");
+function sincronizarComBD(clienteParaSalvar) {
+    if (!clienteParaSalvar) {
+        console.log("Nenhum cliente para sincronizar (função chamada sem parâmetro).");
         return;
     }
 
-    console.log("Enviando para BD:", ultimoCliente);
+    console.log("Tentando enviar para BD:", clienteParaSalvar);
 
-    // Preparar dados para envio
+    // Preparar dados para envio (usando a data/horário do objeto)
     const dados = {
         acao: 'salvar_cliente',
-        nome: ultimoCliente.nome || '',
-        email: ultimoCliente.email || '',
-        telefone: ultimoCliente.telefone || '',
-        observacoes: ultimoCliente.observacoes || '',
-        procedimento: ultimoCliente.procedimento || '',
-        horario: ultimoCliente.horario || ''
-    };
-
-    // Enviar para PHP
-    fetch('../php/salvar_dados.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json', // Mudamos para JSON
-        },
-        body: JSON.stringify(dados) // Envia como JSON
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erro na rede: ' + response.status);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Resposta do servidor:', data);
-        if (data.status === 'sucesso') {
-            console.log('✅ Dados salvos no banco com sucesso!');
-            
-            // Opcional: Limpar localStorage após sucesso
-            // localStorage.removeItem("clientes");
-            
-        } else {
-            console.error('❌ Erro do servidor:', data.mensagem);
-            alert('Erro ao salvar no banco: ' + data.mensagem);
-        }
-    })
-    .catch(error => {
-        console.error('❌ Erro na sincronização:', error);
-        alert('Erro de conexão. Os dados foram salvos localmente.');
-    });
-}
-
-/* ============================================================
-    8. CARREGAR CLIENTES DO BANCO - CORRIGIDO
-   ============================================================ */
-
-function carregarClientesDoBD() {
-    console.log("Carregando clientes do BD...");
-    
-    const dados = {
-        acao: 'listar_clientes'
+        nome: clienteParaSalvar.nome,
+        email: clienteParaSalvar.email,
+        telefone: clienteParaSalvar.telefone,
+        observacoes: clienteParaSalvar.observacoes,
+        procedimento: clienteParaSalvar.procedimento,
+        horario: clienteParaSalvar.horario,
+        data: clienteParaSalvar.data // Envia a data de agendamento
     };
 
     fetch('../php/salvar_dados.php', {
@@ -285,22 +235,57 @@ function carregarClientesDoBD() {
         },
         body: JSON.stringify(dados)
     })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                // Lança o erro do PHP para ser capturado no .catch
+                throw new Error(errorData.mensagem || 'Erro desconhecido na rede.'); 
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Resposta do servidor:', data);
+        if (data.status === 'sucesso') {
+            alert("✅ Agendamento realizado e salvo no banco de dados!");
+        } else {
+            console.error('❌ Erro do servidor:', data.mensagem);
+            alert('Erro ao salvar no banco: ' + data.mensagem);
+        }
+    })
+    .catch(error => {
+        // Captura o erro, incluindo a mensagem de horário ocupado
+        console.error('❌ Erro na sincronização:', error.message);
+        alert(error.message); // Exibe a mensagem de erro vinda do PHP
+    });
+}
+
+/* ============================================================
+    8. CARREGAR CLIENTES DO BANCO - (Tabela)
+    ============================================================ */
+
+function carregarClientesDoBD() {
+    console.log("Carregando clientes do BD...");
+    
+    const dados = { acao: 'listar_clientes' };
+
+    fetch('../php/salvar_dados.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+    })
     .then(response => response.json())
     .then(data => {
-        console.log("Resposta do BD:", data);
-        
         if (data.status === 'sucesso' && data.clientes) {
             atualizarTabelaClientes(data.clientes);
         } else {
             console.error("Erro ao carregar clientes:", data.mensagem);
-            // Fallback para localStorage
-            carregarClientes();
+            carregarClientes(); // Fallback para localStorage
         }
     })
     .catch(error => {
         console.error('Erro ao carregar clientes do BD:', error);
-        // Fallback para localStorage
-        carregarClientes();
+        carregarClientes(); // Fallback para localStorage
     });
 }
 
@@ -313,7 +298,7 @@ function atualizarTabelaClientes(clientes) {
     if (clientes.length === 0) {
         tabela.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align: center; padding: 2rem; color: #666;">
+                <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
                     Nenhum cliente cadastrado no banco de dados
                 </td>
             </tr>
@@ -327,7 +312,7 @@ function atualizarTabelaClientes(clientes) {
             <td>${cliente.nome || ''}</td>
             <td>${cliente.email || ''}</td>
             <td>${cliente.telefone || ''}</td>
-            <td>${cliente.observacoes || ''}</td>
+            <td>${cliente.data_agendamento || ''}</td> <td>${cliente.horario || ''}</td>          <td>${cliente.observacoes || ''}</td>
             <td>
                 <button class="btn-editar" onclick="editarClienteBD(${cliente.id})">Editar</button>
                 <button class="btn-deletar" onclick="deletarClienteBD(${cliente.id})">Deletar</button>
@@ -342,16 +327,11 @@ function deletarClienteBD(id) {
         return;
     }
 
-    const dados = {
-        acao: 'deletar_cliente',
-        id: id
-    };
+    const dados = { acao: 'deletar_cliente', id: id };
 
     fetch('../php/salvar_dados.php', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
     })
     .then(response => response.json())
@@ -371,16 +351,16 @@ function deletarClienteBD(id) {
 
 /* ============================================================
     9. INICIALIZAÇÃO COMPLETA
-   ============================================================ */
+    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Script inicializado");
     
-    // Configurar funcionalidades baseadas na página atual
     const path = window.location.pathname;
     
     if (path.includes("area_parceiro.html")) {
-        carregarClientes();
+        // CORRIGIDO: Prioriza o carregamento do Banco de Dados
+        carregarClientesDoBD(); 
         gerarCalendario();
     }
     
@@ -388,7 +368,6 @@ document.addEventListener("DOMContentLoaded", function() {
         configurarCadastro();
         gerarHorarios();
         
-        // Configurar data mínima para hoje
         const campoData = document.getElementById("dia");
         if (campoData) {
             const hoje = new Date().toISOString().split('T')[0];
@@ -405,5 +384,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// Função global para carregar clientes (chamada pelo HTML)
+// Expor função global para uso no HTML
 window.carregarClientesDoBD = carregarClientesDoBD;
